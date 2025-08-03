@@ -1,0 +1,6 @@
+@BurbujApp.API_HostAddress = http://localhost:5107
+
+GET {{BurbujApp.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

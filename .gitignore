@@ -1,0 +1,44 @@
+# .NET build folders
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# VS Code
+.vscode/
+
+# Visual Studio
+.vs/
+
+# Test results
+TestResult*/
+
+# Node modules
+node_modules/
+
+# Local and development settings
+appsettings.Development.json
+appsettings.Local.json
+
+# Others
+*.log
+*.DS_Store
+
+# Ignore NuGet packages
+*.nupkg
+
+# Ignore Mac system files
+.DS_Store
+
+# Ignore Windows thumbnail cache files
+Thumbs.db
+
+# Ignore JetBrains Rider project files
+.idea/
+
+# Ignore coverage reports
+coverage/
