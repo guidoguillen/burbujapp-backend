@@ -1,0 +1,104 @@
+version: '3.8'
+services:
+  # Bases de datos independientes para cada microservicio
+  mysql-identity:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: burbujapp_identity
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_identity_data:/var/lib/mysql
+
+  mysql-inventory:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: burbujapp_inventory
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_inventory_data:/var/lib/mysql
+
+  mysql-billing:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: burbujapp_billing
+    ports:
+      - "3308:3306"
+    volumes:
+      - mysql_billing_data:/var/lib/mysql
+
+  mysql-scheduling:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: burbujapp_scheduling
+    ports:
+      - "3309:3306"
+    volumes:
+      - mysql_scheduling_data:/var/lib/mysql
+
+  # API Gateway
+  api-gateway:
+    build: ./BurbujApp.API
+    ports:
+      - "5000:80"
+    depends_on:
+      - identity-service
+      - inventory-service
+      - billing-service
+      - scheduling-service
+    environment:
+      - Services__Identity=http://identity-service:80
+      - Services__Inventory=http://inventory-service:80
+      - Services__Billing=http://billing-service:80
+      - Services__Scheduling=http://scheduling-service:80
+
+  # Microservicios
+  identity-service:
+    build: ./BurbujApp.Identity
+    ports:
+      - "5001:80"
+    depends_on:
+      - mysql-identity
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=mysql-identity;Database=burbujapp_identity;User=root;Password=rootpassword;
+      - Jwt__Key=MySecretKey123456789012345678901234567890
+      - Jwt__Issuer=BurbujApp
+      - Jwt__Audience=BurbujApp
+
+  inventory-service:
+    build: ./BurbujApp.Inventory
+    ports:
+      - "5002:80"
+    depends_on:
+      - mysql-inventory
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=mysql-inventory;Database=burbujapp_inventory;User=root;Password=rootpassword;
+
+  billing-service:
+    build: ./BurbujApp.Billing
+    ports:
+      - "5003:80"
+    depends_on:
+      - mysql-billing
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=mysql-billing;Database=burbujapp_billing;User=root;Password=rootpassword;
+
+  scheduling-service:
+    build: ./BurbujApp.Scheduling
+    ports:
+      - "5004:80"
+    depends_on:
+      - mysql-scheduling
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=mysql-scheduling;Database=burbujapp_scheduling;User=root;Password=rootpassword;
+
+volumes:
+  mysql_identity_data:
+  mysql_inventory_data:
+  mysql_billing_data:
+  mysql_scheduling_data:

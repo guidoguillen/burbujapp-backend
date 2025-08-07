@@ -7,11 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BurbujApp.Application\BurbujApp.Application.csproj" />
+    <ProjectReference Include="..\BurbujApp.Infrastructure\BurbujApp.Infrastructure.csproj" />
+    <ProjectReference Include="..\BurbujApp.Persistence\BurbujApp.Persistence.csproj" />
   </ItemGroup>
 
 </Project>
