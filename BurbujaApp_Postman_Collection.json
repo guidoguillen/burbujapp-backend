@@ -1,0 +1,910 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+		"name": "BurbujaApp API - Microservicio Único",
+		"description": "Colección completa de APIs para BurbujaApp - Sistema de gestión de lavandería\\n\\n🧺 **Funcionalidades incluidas:**\\n- Autenticación y autorización\\n- Gestión de usuarios\\n- Servicios de lavandería\\n- Sistema de citas\\n- Gestión de productos e inventario\\n- Facturación completa\\n\\n🔧 **Configuración:**\\n1. Actualizar la variable baseUrl con tu URL de deployment\\n2. Los tokens JWT se configuran automáticamente después del login\\n3. Todos los endpoints incluyen ejemplos de datos\\n\\n🚀 **Deploy URLs:**\\n- Local: http://localhost:5000\\n- Koyeb: https://tu-app.koyeb.app",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "🔐 Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    if (response.token) {",
+									"        pm.environment.set('jwt_token', response.token);",
+									"        pm.environment.set('user_id', response.user.id);",
+									"        console.log('Token guardado:', response.token);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\\n  \\\"email\\\": \\\"admin@burbuja.app\\\",\\n  \\\"password\\\": \\\"Admin123!\\\",\\n  \\\"firstName\\\": \\\"Admin\\\",\\n  \\\"lastName\\\": \\\"Burbuja\\\",\\n  \\\"phoneNumber\\\": \\\"+52 55 1234 5678\\\"\\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Registra un nuevo usuario en el sistema.\n\n**Campos requeridos:**\n- email: Email único del usuario\n- password: Contraseña (mínimo 6 caracteres)\n- firstName: Nombre\n- lastName: Apellido\n\n**Campos opcionales:**\n- phoneNumber: Número de teléfono"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('jwt_token', response.token);",
+									"    pm.environment.set('user_id', response.user.id);",
+									"    pm.environment.set('user_email', response.user.email);",
+									"    pm.environment.set('user_role', response.user.role);",
+									"    console.log('Login exitoso. Token guardado:', response.token);",
+									"    console.log('Usuario:', response.user.firstName + ' ' + response.user.lastName);",
+									"    console.log('Rol:', response.user.role);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\\n  \\\"email\\\": \\\"admin@burbuja.app\\\",\\n  \\\"password\\\": \\\"Admin123!\\\"\\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Autentica un usuario y devuelve un JWT token.\n\n**Respuesta exitosa incluye:**\n- token: JWT token para autenticación\n- user: Información del usuario\n- expiresAt: Fecha de expiración del token"
+					},
+					"response": []
+				},
+				{
+					"name": "Validate Token",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/validate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"validate"
+							]
+						},
+						"description": "Valida si el token JWT actual es válido.\n\n**Headers requeridos:**\n- Authorization: Bearer {token}"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints de autenticación y autorización.\n\n**Incluye:**\n- Registro de usuarios\n- Login con JWT\n- Validación de tokens"
+		},
+		{
+			"name": "🧽 Services Management",
+			"item": [
+				{
+					"name": "Get All Services",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/services",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"services"
+							]
+						},
+						"description": "Obtiene todos los servicios activos de lavandería.\n\n**Respuesta incluye:**\n- Lista de servicios con precios\n- Duración estimada\n- Estado activo/inactivo"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Service by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/services/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"services",
+								"1"
+							]
+						},
+						"description": "Obtiene un servicio específico por su ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Service",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('last_service_id', response.id);",
+									"    console.log('Servicio creado con ID:', response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Lavado Completo Premium\",\n  \"description\": \"Lavado, secado, planchado y empaquetado de ropa con productos premium\",\n  \"price\": 35.50,\n  \"durationMinutes\": 180\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/services",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"services"
+							]
+						},
+						"description": "Crea un nuevo servicio de lavandería.\n\n**Campos requeridos:**\n- name: Nombre del servicio\n- description: Descripción detallada\n- price: Precio en decimal\n- durationMinutes: Duración estimada en minutos"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Service",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Lavado Completo Premium - Actualizado\",\n  \"description\": \"Lavado, secado, planchado y empaquetado con productos premium y entrega a domicilio\",\n  \"price\": 45.00,\n  \"durationMinutes\": 240,\n  \"isActive\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/services/{{last_service_id}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"services",
+								"{{last_service_id}}"
+							]
+						},
+						"description": "Actualiza un servicio existente.\n\n**Todos los campos son opcionales:**\n- name: Nuevo nombre\n- description: Nueva descripción\n- price: Nuevo precio\n- durationMinutes: Nueva duración\n- isActive: Estado activo/inactivo"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Service (Soft Delete)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/services/{{last_service_id}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"services",
+								"{{last_service_id}}"
+							]
+						},
+						"description": "Realiza una eliminación suave del servicio (marca como inactivo).\n\n**Nota:** No elimina físicamente el registro, solo lo marca como inactivo."
+					},
+					"response": []
+				}
+			],
+			"description": "Gestión completa de servicios de lavandería.\n\n**Operaciones CRUD:**\n- Crear servicios\n- Consultar servicios\n- Actualizar servicios\n- Eliminar servicios (soft delete)"
+		},
+		{
+			"name": "📅 Appointments",
+			"item": [
+				{
+					"name": "Get All Appointments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/appointments",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"appointments"
+							]
+						},
+						"description": "Obtiene todas las citas del usuario autenticado.\n\n**Incluye información de:**\n- Servicio asociado\n- Fechas y horarios\n- Estado de la cita\n- Notas adicionales"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Appointment by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/appointments/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"appointments",
+								"1"
+							]
+						},
+						"description": "Obtiene una cita específica por su ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Appointment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('last_appointment_id', response.id);",
+									"    console.log('Cita creada con ID:', response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"serviceId\": 1,\n  \"appointmentDate\": \"2024-12-15T00:00:00Z\",\n  \"startTime\": \"2024-12-15T10:00:00Z\",\n  \"endTime\": \"2024-12-15T13:00:00Z\",\n  \"notes\": \"Ropa delicada, manejo especial requerido. Entrega preferiblemente en la tarde.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/appointments",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"appointments"
+							]
+						},
+						"description": "Crea una nueva cita para un servicio.\n\n**Campos requeridos:**\n- serviceId: ID del servicio\n- appointmentDate: Fecha de la cita\n- startTime: Hora de inicio\n- endTime: Hora de finalización\n\n**Campos opcionales:**\n- notes: Notas especiales"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Appointment",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"serviceId\": 1,\n  \"appointmentDate\": \"2024-12-16T00:00:00Z\",\n  \"startTime\": \"2024-12-16T14:00:00Z\",\n  \"endTime\": \"2024-12-16T17:00:00Z\",\n  \"status\": 1,\n  \"notes\": \"Ropa delicada, manejo especial requerido. Cita reprogramada por solicitud del cliente.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/appointments/{{last_appointment_id}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"appointments",
+								"{{last_appointment_id}}"
+							]
+						},
+						"description": "Actualiza una cita existente.\n\n**Estados disponibles:**\n- 0: Pendiente\n- 1: Confirmada\n- 2: En proceso\n- 3: Completada\n- 4: Cancelada"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Appointment",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/appointments/{{last_appointment_id}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"appointments",
+								"{{last_appointment_id}}"
+							]
+						},
+						"description": "Cancela una cita (eliminación lógica)."
+					},
+					"response": []
+				}
+			],
+			"description": "Sistema completo de gestión de citas.\n\n**Funcionalidades:**\n- Programar citas\n- Modificar horarios\n- Seguimiento de estados\n- Cancelación de citas"
+		},
+		{
+			"name": "📦 Products & Inventory",
+			"item": [
+				{
+					"name": "Get All Products",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"products"
+							]
+						},
+						"description": "Obtiene todos los productos activos del inventario.\n\n**Incluye:**\n- Información básica del producto\n- Precios y stock actual\n- Niveles mínimos de stock\n- Códigos de barras"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/products/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"1"
+							]
+						},
+						"description": "Obtiene un producto específico por su ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('last_product_id', response.id);",
+									"    console.log('Producto creado con ID:', response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Detergente Premium EcoClean\",\n  \"description\": \"Detergente concentrado biodegradable para todo tipo de telas, especialmente efectivo con manchas difíciles\",\n  \"brand\": \"EcoClean\",\n  \"category\": \"Detergentes\",\n  \"price\": 25.99,\n  \"stock\": 50,\n  \"minimumStock\": 10,\n  \"barCode\": \"7501234567890\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"products"
+							]
+						},
+						"description": "Crea un nuevo producto en el inventario.\n\n**Campos requeridos:**\n- name: Nombre del producto\n- description: Descripción detallada\n- price: Precio unitario\n- stock: Cantidad inicial\n- minimumStock: Stock mínimo para alertas\n\n**Campos opcionales:**\n- brand: Marca\n- category: Categoría\n- barCode: Código de barras"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Detergente Premium EcoClean - Fórmula Mejorada\",\n  \"description\": \"Detergente concentrado biodegradable con nueva fórmula mejorada para todo tipo de telas\",\n  \"brand\": \"EcoClean\",\n  \"category\": \"Detergentes Premium\",\n  \"price\": 28.99,\n  \"stock\": 75,\n  \"minimumStock\": 15,\n  \"barCode\": \"7501234567890\",\n  \"isActive\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/products/{{last_product_id}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"{{last_product_id}}"
+							]
+						},
+						"description": "Actualiza un producto existente en el inventario."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/products/{{last_product_id}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"{{last_product_id}}"
+							]
+						},
+						"description": "Elimina un producto del inventario (soft delete)."
+					},
+					"response": []
+				}
+			],
+			"description": "Gestión completa de productos e inventario.\n\n**Funcionalidades:**\n- Catálogo de productos\n- Control de stock\n- Alertas de stock mínimo\n- Códigos de barras"
+		},
+		{
+			"name": "💰 Invoicing",
+			"item": [
+				{
+					"name": "Get All Invoices",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/invoices",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"invoices"
+							]
+						},
+						"description": "Obtiene todas las facturas del sistema.\n\n**Incluye:**\n- Información del cliente\n- Detalles de servicios facturados\n- Estados de pago\n- Totales y subtotales"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Invoice by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/invoices/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"invoices",
+								"1"
+							]
+						},
+						"description": "Obtiene una factura específica con todos sus detalles."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Invoice",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('last_invoice_id', response.id);",
+									"    console.log('Factura creada con ID:', response.id);",
+									"    console.log('Número de factura:', response.invoiceNumber);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"{{user_id}}\",\n  \"dueDate\": \"2024-12-30T00:00:00Z\",\n  \"items\": [\n    {\n      \"serviceId\": 1,\n      \"description\": \"Lavado Completo Premium\",\n      \"quantity\": 2,\n      \"unitPrice\": 35.50\n    },\n    {\n      \"serviceId\": 2,\n      \"description\": \"Planchado Express\",\n      \"quantity\": 1,\n      \"unitPrice\": 15.00\n    }\n  ],\n  \"notes\": \"Factura por servicios de lavandería del mes de diciembre. Entrega programada para el 20 de diciembre.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/invoices",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"invoices"
+							]
+						},
+						"description": "Crea una nueva factura con múltiples servicios.\n\n**Campos requeridos:**\n- userId: ID del cliente\n- items: Array de servicios facturados\n  - serviceId: ID del servicio\n  - description: Descripción del servicio\n  - quantity: Cantidad\n  - unitPrice: Precio unitario\n\n**Campos opcionales:**\n- dueDate: Fecha de vencimiento\n- notes: Notas adicionales\n\n**Cálculos automáticos:**\n- Subtotal\n- Impuestos (16% IVA)\n- Total final"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Invoice",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": 1,\n  \"notes\": \"Factura pagada - Transferencia bancaria recibida el 15 de diciembre\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/invoices/{{last_invoice_id}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"invoices",
+								"{{last_invoice_id}}"
+							]
+						},
+						"description": "Actualiza el estado de una factura.\n\n**Estados disponibles:**\n- 0: Pendiente\n- 1: Pagada\n- 2: Vencida\n- 3: Cancelada"
+					},
+					"response": []
+				}
+			],
+			"description": "Sistema completo de facturación.\n\n**Características:**\n- Facturación multi-servicio\n- Cálculo automático de impuestos\n- Estados de pago\n- Numeración automática"
+		},
+		{
+			"name": "🏥 Health & Monitoring",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Verifica el estado general de la aplicación.\n\n**No requiere autenticación.**\n\n**Respuesta incluye:**\n- Estado de la aplicación\n- Estado de la base de datos\n- Tiempo de respuesta\n- Información del sistema"
+					},
+					"response": []
+				},
+				{
+					"name": "API Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/swagger/v1/swagger.json",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"swagger",
+								"v1",
+								"swagger.json"
+							]
+						},
+						"description": "Obtiene la documentación OpenAPI/Swagger en formato JSON.\n\n**Útil para:**\n- Generación automática de código\n- Documentación de la API\n- Integración con herramientas de desarrollo"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints de monitoreo y salud del sistema.\n\n**Incluye:**\n- Health checks\n- Documentación de la API\n- Información del sistema"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Pre-request script global",
+					"// Este script se ejecuta antes de cada request",
+					"",
+					"// Verificar si tenemos un token válido",
+					"const token = pm.environment.get('jwt_token');",
+					"if (token && pm.request.headers.get('Authorization')) {",
+					"    console.log('Token JWT configurado para la request');",
+					"}",
+					"",
+					"// Log de la request que se va a ejecutar",
+					"console.log('Ejecutando:', pm.request.method, pm.request.url.toString());"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Test script global",
+					"// Este script se ejecuta después de cada response",
+					"",
+					"// Log del resultado",
+					"console.log('Respuesta:', pm.response.status, pm.response.code);",
+					"",
+					"// Verificar errores comunes",
+					"if (pm.response.code === 401) {",
+					"    console.log('❌ Error de autenticación. Verifica tu token JWT.');",
+					"} else if (pm.response.code === 403) {",
+					"    console.log('❌ Acceso prohibido. Verifica tus permisos.');",
+					"} else if (pm.response.code === 404) {",
+					"    console.log('❌ Recurso no encontrado.');",
+					"} else if (pm.response.code >= 200 && pm.response.code < 300) {",
+					"    console.log('✅ Request exitosa');",
+					"} else if (pm.response.code >= 400) {",
+					"    console.log('❌ Error en la request:', pm.response.status);",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string",
+			"description": "URL base de la API. Cambiar según el ambiente:\n- Local: http://localhost:5000\n- Koyeb: https://tu-app.koyeb.app"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string",
+			"description": "Token JWT para autenticación. Se configura automáticamente después del login."
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "string",
+			"description": "ID del usuario autenticado. Se configura automáticamente después del login."
+		},
+		{
+			"key": "user_email",
+			"value": "",
+			"type": "string",
+			"description": "Email del usuario autenticado."
+		},
+		{
+			"key": "user_role",
+			"value": "",
+			"type": "string",
+			"description": "Rol del usuario autenticado (Admin, Manager, Employee, Customer)."
+		},
+		{
+			"key": "last_service_id",
+			"value": "",
+			"type": "string",
+			"description": "ID del último servicio creado. Se usa para operaciones de update/delete."
+		},
+		{
+			"key": "last_appointment_id",
+			"value": "",
+			"type": "string",
+			"description": "ID de la última cita creada."
+		},
+		{
+			"key": "last_product_id",
+			"value": "",
+			"type": "string",
+			"description": "ID del último producto creado."
+		},
+		{
+			"key": "last_invoice_id",
+			"value": "",
+			"type": "string",
+			"description": "ID de la última factura creada."
+		}
+	]
+}
