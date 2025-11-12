@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BurbujApp - Página de Bienvenida</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+            --primary: #2a9d8f;
+            --secondary: #264653;
+            --accent: #e76f51;
+            --background: #f4f4f4;
+            --text: #1a1a1a;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(160deg, rgba(42, 157, 143, 0.15), rgba(231, 111, 81, 0.1));
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: linear-gradient(120deg, var(--primary), var(--secondary));
+            color: #fff;
+            padding: 3rem 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.35), transparent 55%);
+            pointer-events: none;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: clamp(2.5rem, 6vw, 3.5rem);
+            letter-spacing: 0.05em;
+        }
+
+        header p {
+            margin-top: 1rem;
+            max-width: 40rem;
+            margin-inline: auto;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        main {
+            flex: 1;
+            padding: 3rem 1.5rem 4rem;
+            display: grid;
+            gap: 2.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            align-items: start;
+            max-width: 1080px;
+            margin: -4rem auto 0;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            border-radius: 18px;
+            padding: 2rem;
+            box-shadow: 0 18px 40px rgba(38, 70, 83, 0.15);
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+            border: 1px solid rgba(42, 157, 143, 0.15);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 55px rgba(38, 70, 83, 0.2);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            color: var(--secondary);
+            font-size: 1.4rem;
+        }
+
+        .card p {
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            color: rgba(26, 26, 26, 0.85);
+        }
+
+        .card a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
+
+        .card a svg {
+            width: 1rem;
+            height: 1rem;
+            transition: transform 0.2s ease;
+        }
+
+        .card a:hover svg {
+            transform: translateX(3px);
+        }
+
+        footer {
+            background: #0f1c24;
+            color: rgba(255, 255, 255, 0.75);
+            text-align: center;
+            padding: 2rem 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        footer a {
+            color: rgba(231, 111, 81, 0.8);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        @media (max-width: 720px) {
+            header {
+                padding: 2.5rem 1.25rem;
+            }
+
+            main {
+                padding: 2rem 1rem 3rem;
+                margin-top: -3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Bienvenido a BurbujApp</h1>
+        <p>Tu plataforma integral para la gestión de servicios de lavandería. Controla pedidos, inventario y facturación en un solo lugar con herramientas pensadas para tu negocio.</p>
+    </header>
+
+    <main>
+        <section class="card">
+            <h2>Gestión de Pedidos</h2>
+            <p>Visualiza el estado de cada pedido en tiempo real, asigna tareas a tu equipo y automatiza recordatorios para mantener a tus clientes informados.</p>
+            <a href="#pedidos" aria-label="Explorar gestión de pedidos">
+                Conocer más
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                </svg>
+            </a>
+        </section>
+
+        <section class="card">
+            <h2>Inventario Inteligente</h2>
+            <p>Recibe alertas cuando el stock de insumos sea bajo, registra nuevas existencias con un toque y mantén un control histórico de movimientos.</p>
+            <a href="#inventario" aria-label="Explorar inventario inteligente">
+                Explorar funciones
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                </svg>
+            </a>
+        </section>
+
+        <section class="card">
+            <h2>Reportes Financieros</h2>
+            <p>Analiza ingresos, gastos y tendencias con reportes personalizables. Conecta tu facturación para automatizar cierres mensuales.</p>
+            <a href="#reportes" aria-label="Explorar reportes financieros">
+                Ver reportes
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                </svg>
+            </a>
+        </section>
+    </main>
+
+    <footer>
+        <p>¿Quieres saber más? <a href="mailto:contacto@burbujapp.com">Escríbenos</a> y agenda una demo personalizada.</p>
+        <p>&copy; <span id="year"></span> BurbujApp. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
